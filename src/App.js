@@ -15,6 +15,14 @@ function App() {
       )
     );
   }
+  function removeAllItems() {
+    const confirm = window.confirm(
+      "Are you sure you want to remove all items?"
+    );
+    if (confirm) {
+      setItems([]);
+    }
+  }
   return (
     <div className="App">
       <Logo />
@@ -23,6 +31,7 @@ function App() {
         items={items}
         handleRemoveItem={handleRemoveItem}
         handleToggleItem={handleToggleItem}
+        removeAllItems={removeAllItems}
       />
       <Stats items={items} />
     </div>
@@ -70,7 +79,12 @@ function Form({ handleAddItems }) {
   );
 }
 
-function PackingList({ items, handleRemoveItem, handleToggleItem }) {
+function PackingList({
+  items,
+  handleRemoveItem,
+  handleToggleItem,
+  removeAllItems,
+}) {
   const [sortedBy, setSortedBy] = useState("input");
   let sortedItem;
   if (sortedBy === "input") {
@@ -104,6 +118,7 @@ function PackingList({ items, handleRemoveItem, handleToggleItem }) {
           <option value="description">Sort By Description</option>
           <option value="packed">Sort By Packed status</option>
         </select>
+        <button onClick={removeAllItems}>clear list</button>
       </div>
     </div>
   );
