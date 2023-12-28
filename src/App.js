@@ -1,16 +1,18 @@
 import { useState } from "react";
 
-
 function App() {
-  const [items, setItems] = useState([])
+  const [items, setItems] = useState([]);
   function handleAddItems(item) {
-    setItems((items => [...items, item]))
+    setItems((items) => [...items, item]);
+  }
+  function handleRemoveItem(id) {
+    setItems((items) => items.filter(item => item.id !== id));
   }
   return (
     <div className="App">
       <Logo />
-      <Form handleAddItems={handleAddItems}/>
-      <PackingList items={items}/>
+      <Form handleAddItems={handleAddItems} />
+      <PackingList items={items} handleRemoveItem={handleRemoveItem} />
       <Stats />
     </div>
   );
@@ -20,7 +22,7 @@ function Logo() {
   return <h1>🏝️ Far Away 🧳</h1>;
 }
 
-function Form({handleAddItems}) {
+function Form({ handleAddItems }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
   function handleSubmit(e) {
@@ -30,7 +32,7 @@ function Form({handleAddItems}) {
     }
     const newItem = { description, quantity, package: false, id: Date.now() };
     console.log(newItem);
-    handleAddItems(newItem)
+    handleAddItems(newItem);
     setDescription("");
     setQuantity(1);
   }
@@ -58,25 +60,25 @@ function Form({handleAddItems}) {
   );
 }
 
-function PackingList({items}) {
+function PackingList({ items,handleRemoveItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} />
+          <Item item={item} key={item.id} handleRemoveItem={handleRemoveItem}/>
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item }) {
+function Item({ item,handleRemoveItem }) {
   return (
     <li>
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.description} {item.quantity}
       </span>
-      <button>❌</button>
+      <button onClick={()=>{handleRemoveItem(item.id)}}>❌</button>
     </li>
   );
 }
