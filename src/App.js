@@ -24,7 +24,7 @@ function App() {
         handleRemoveItem={handleRemoveItem}
         handleToggleItem={handleToggleItem}
       />
-      <Stats />
+      <Stats items={items} />
     </div>
   );
 }
@@ -42,7 +42,6 @@ function Form({ handleAddItems }) {
       return;
     }
     const newItem = { description, quantity, package: false, id: Date.now() };
-    console.log(newItem);
     handleAddItems(newItem);
     setDescription("");
     setQuantity(1);
@@ -112,10 +111,19 @@ function Item({ item, handleRemoveItem, handleToggleItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (items.length === 0) return <p className="stats"><em>Start Adding Items</em></p>;
+  const numItems = items.length;
+  const numOfPacked = items.filter((item) => item.packed).length;
+  const numOfPackedPercentage = Math.round((numOfPacked / numItems) * 100);
   return (
     <footer className="stats">
-      <em>You have X items on your list, and you already packed x </em>
+      <em>
+        {numOfPackedPercentage === 100
+          ? "You are ready to go!"
+          : `You have ${numItems} items on your list, and you already packed
+        ${numOfPacked}(${numOfPackedPercentage}%)`}
+      </em>
     </footer>
   );
 }
