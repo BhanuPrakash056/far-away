@@ -71,10 +71,25 @@ function Form({ handleAddItems }) {
 }
 
 function PackingList({ items, handleRemoveItem, handleToggleItem }) {
+  const [sortedBy, setSortedBy] = useState("input");
+  let sortedItem;
+  if (sortedBy === "input") {
+    sortedItem = items;
+  }
+  if (sortedBy === "description") {
+    sortedItem = items
+      .slice()
+      .sort((a, b) => a.description.localeCompare(b.description));
+  }
+  if (sortedBy === "packed") {
+    sortedItem = items
+      .slice()
+      .sort((a, b) => Number(a.packed) - Number(b.packed));
+  }
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {sortedItem.map((item) => (
           <Item
             item={item}
             key={item.id}
@@ -83,6 +98,13 @@ function PackingList({ items, handleRemoveItem, handleToggleItem }) {
           />
         ))}
       </ul>
+      <div className="actions">
+        <select value={sortedBy} onChange={(e) => setSortedBy(e.target.value)}>
+          <option value="input">Sort By Input By order</option>
+          <option value="description">Sort By Description</option>
+          <option value="packed">Sort By Packed status</option>
+        </select>
+      </div>
     </div>
   );
 }
@@ -112,7 +134,12 @@ function Item({ item, handleRemoveItem, handleToggleItem }) {
 }
 
 function Stats({ items }) {
-  if (items.length === 0) return <p className="stats"><em>Start Adding Items</em></p>;
+  if (items.length === 0)
+    return (
+      <p className="stats">
+        <em>Start Adding Items</em>
+      </p>
+    );
   const numItems = items.length;
   const numOfPacked = items.filter((item) => item.packed).length;
   const numOfPackedPercentage = Math.round((numOfPacked / numItems) * 100);
